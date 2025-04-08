@@ -1,16 +1,31 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Plus, Search, SlidersHorizontal } from "lucide-react"
-import Link from "next/link"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Plus, Search, SlidersHorizontal } from "lucide-react";
+import { PropertyForm } from "./property-form";
 
 export function PropertyFilters() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [propertyType, setPropertyType] = useState("all")
-  const [status, setStatus] = useState("all")
+  const [searchTerm, setSearchTerm] = useState("");
+  const [propertyType, setPropertyType] = useState("all");
+  const [status, setStatus] = useState("all");
+
+  // State for managing modal visibility
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Function to open the modal
+  const openModal = () => setIsModalOpen(true);
+
+  // Function to close the modal
+  const closeModal = () => setIsModalOpen(false);
 
   return (
     <div className="mb-6 space-y-4">
@@ -25,14 +40,15 @@ export function PropertyFilters() {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <Button asChild>
-          <Link href="/properties/add">
-            <Plus className="mr-2 h-4 w-4" />
-            Add Property
-          </Link>
+
+        {/* Trigger to open the modal */}
+        <Button onClick={openModal}>
+          <Plus className="mr-2 h-4 w-4" />
+          Add Property
         </Button>
       </div>
 
+      {/* Filters */}
       <div className="flex flex-wrap gap-4">
         <div className="flex items-center gap-2">
           <SlidersHorizontal className="h-4 w-4 text-muted-foreground" />
@@ -75,7 +91,9 @@ export function PropertyFilters() {
               <SelectItem value="0-100000">$0 - $100,000</SelectItem>
               <SelectItem value="100000-300000">$100,000 - $300,000</SelectItem>
               <SelectItem value="300000-500000">$300,000 - $500,000</SelectItem>
-              <SelectItem value="500000-1000000">$500,000 - $1,000,000</SelectItem>
+              <SelectItem value="500000-1000000">
+                $500,000 - $1,000,000
+              </SelectItem>
               <SelectItem value="1000000+">$1,000,000+</SelectItem>
             </SelectContent>
           </Select>
@@ -94,7 +112,19 @@ export function PropertyFilters() {
           </Select>
         </div>
       </div>
-    </div>
-  )
-}
 
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-[90vh] ">
+            <h2 className="text-xl font-semibold mb-4">Add Property</h2>
+            <PropertyForm />
+            <Button className="mt-4" onClick={closeModal}>
+              Close
+            </Button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
